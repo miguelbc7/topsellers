@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const passport = require('passport');
 const keys = require("../../config/keys");
 
 // Load input validation
@@ -10,6 +11,24 @@ const validateLoginInput = require("../../validation/login");
 
 // Load User model
 const User = require("../../models/User");
+
+/* GET Google Authentication API. */
+router.get(
+    "/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+    "/google/callback",
+    passport.authenticate("google", { failureRedirect: "/", session: false }),
+    function(req, res) {
+        jwt.sign( req.user, keys.secretOrKey, {
+            expiresIn: 31556926 // 1 year in seconds
+        }, (err, token) => {
+                res.redirect("http://localhost:3000?token=" + "Bearer " + token);
+        });
+    }
+);
 
 // @route POST api/users/register
 // @desc Register user
