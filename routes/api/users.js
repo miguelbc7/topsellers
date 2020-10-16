@@ -12,24 +12,6 @@ const validateLoginInput = require("../../validation/login");
 // Load User model
 const User = require("../../models/User");
 
-/* GET Google Authentication API. */
-router.get(
-    "/google",
-    passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get(
-    "/google/callback",
-    passport.authenticate("google", { failureRedirect: "/", session: false }),
-    function(req, res) {
-        jwt.sign( req.user, keys.secretOrKey, {
-            expiresIn: 31556926 // 1 year in seconds
-        }, (err, token) => {
-                res.redirect("http://localhost:3000?token=" + "Bearer " + token);
-        });
-    }
-);
-
 // @route POST api/users/register
 // @desc Register user
 // @access Public
@@ -114,6 +96,29 @@ router.post("/login", (req, res) => {
                 .json({ passwordincorrect: "Password incorrect" });
             }
         });
+    });
+});
+
+/* GET Google Authentication API. */
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/", session: false }), function(req, res) {
+    jwt.sign( req.user, keys.secretOrKey, {
+        expiresIn: 31556926 // 1 year in seconds
+    }, (err, token) => {
+        res.redirect("http://localhost:3000?token=" + "Bearer " + token);
+    });
+});
+
+/* GET Facebook Authentication API */
+router.get('/facebook', passport.authenticate('facebook'));
+
+router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }), function(req, res) {
+    // Successful authentication, redirect home.
+    jwt.sign( req.user, keys.secretOrKey, {
+        expiresIn: 31556926 // 1 year in seconds
+    }, (err, token) => {
+        res.redirect("http://localhost:3000?token=" + "Bearer " + token);
     });
 });
 
