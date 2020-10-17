@@ -3,6 +3,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const mongoose = require("mongoose");
 const User = mongoose.model("users");
 
@@ -53,13 +54,35 @@ module.exports = passport => {
         callbackURL: "http://localhost:5000/api/users/facebook/callback",
         enableProof: true
     }, function(accessToken, refreshToken, profile, done) {
-            console.log('profile', profile);
-            var userData = {
-                name: profile.displayName,
-                token: accessToken
-            };
-            
-            done(null, userData);
-        }
-    ));
+        console.log('profile', profile);
+        var userData = {
+            name: profile.displayName,
+            token: accessToken
+        };
+        
+        done(null, userData);
+    }));
+
+    /* passport.use(new TwitterStrategy({
+        consumerKey: TWITTER_CONSUMER_KEY,
+        consumerSecret: TWITTER_CONSUMER_SECRET,
+        callbackURL: "http://127.0.0.1:3000/auth/twitter/callback"
+    }, function(token, tokenSecret, profile, cb) {
+        User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+            return cb(err, user);
+        });
+    })); */
+
+    passport.use(new GitHubStrategy({
+        clientID: "105fbf4afe9fcdd81156",
+        clientSecret: "f3f066480d7c6fea940613d880fd74c78407c4b1",
+        callbackURL: "http://localhost:5000/api/users/github/callback"
+    }, function(accessToken, refreshToken, profile, done) {
+        var userData = {
+            name: profile.displayName,
+            token: accessToken
+        };
+        
+        done(null, userData);
+    }));
 };

@@ -122,4 +122,14 @@ router.get('/facebook/callback', passport.authenticate('facebook', { failureRedi
     });
 });
 
+router.get('/github', passport.authenticate('github'));
+
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
+    jwt.sign( req.user, keys.secretOrKey, {
+        expiresIn: 31556926 // 1 year in seconds
+    }, (err, token) => {
+        res.redirect("http://localhost:3000?token=" + "Bearer " + token);
+    });
+});
+
 module.exports = router;
