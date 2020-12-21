@@ -4,13 +4,17 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require('cors');
 
+const cron = require('node-cron');
+
 const users = require("./routes/api/users");
+const scrapper = require("./routes/api/scrapper");
+const amazon = require("./scrapper/amazon");
 
 const app = express();
 
 app.use('*', function(req, res, next) {
 	//replace localhost:8080 to the ip address:port of your server
-	res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+	res.header("Access-Control-Allow-Origin", "http://localhost:8081");
 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
 	res.header('Access-Control-Allow-Headers', 'Content-Type');
 	res.header('Access-Control-Allow-Credentials', true);
@@ -46,6 +50,15 @@ require("./config/passport")(passport);
 
 // Routes
 app.use("/api/users", users);
+app.use("/api/scrapper", scrapper);
+
+/* amazon() */
+//cron
+cron.schedule('*/20 * * * *', async () => {
+	//console.log('running a task every minute');
+	await amazon()
+});
+
 
 const port = process.env.PORT || 5000; // process.env.port is Heroku's port if you choose to deploy the app there
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
