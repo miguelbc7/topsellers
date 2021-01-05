@@ -8,7 +8,8 @@ const cron = require('node-cron');
 
 const users = require("./routes/api/users");
 const scrapper = require("./routes/api/scrapper");
-const amazon = require("./scrapper/amazon");
+const sellers = require("./scrapper/sellers");
+const products = require("./scrapper/products");
 
 const app = express();
 
@@ -52,11 +53,12 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/scrapper", scrapper);
 
-/* amazon() */
+/* products() */
 //cron
 cron.schedule('*/20 * * * *', async () => {
 	//console.log('running a task every minute');
-	await amazon()
+	await sellers()
+	await products()
 });
 
 

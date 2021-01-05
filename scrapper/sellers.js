@@ -1,7 +1,7 @@
 const scrapeIt = require("scrape-it")
 // Load Seller model
 const Seller = require("../models/Seller");
-const amazon = async () => {
+const sellers = async () => {
     const PAGES = 10
     console.log('Se inicio el scraping')
     for(let a = 0; a < PAGES; a++){
@@ -131,4 +131,4 @@ const amazon = async () => {
     console.log('finalizo el scraping')
     return map
 }
-module.exports = amazon;
+module.exports = sellers;
