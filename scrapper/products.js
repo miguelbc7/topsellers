@@ -1,10 +1,12 @@
 const scrapeIt = require("scrape-it")
+const moment = require("moment");
 // Load Product model
 const Product = require("../models/Product");
 // Load Category model
 const Category = require("../models/Category");
 
 const products = async () => {
+    console.log('se inicio el scrapping a products')
     const BASE_URL = 'https://www.amazon.com/Best-Sellers/zgbs'
     let CategoriesScrapper = await scrapeIt(BASE_URL, {
         categories: {
@@ -18,9 +20,12 @@ const products = async () => {
             }
         }
     });
-    console.log('aqui')
     for(let i = 0; i < CategoriesScrapper.data.categories.length; i++){
         let item = CategoriesScrapper.data.categories[i]
+        item = {
+            ...item,
+            date:moment()
+        }
         let category;
         let categoryfind = await Category.findOne({name: item.name }).exec()
         if(categoryfind){
@@ -71,6 +76,7 @@ const products = async () => {
                 }
             }
         }
-    }        
+    }
+    console.log('finalizo el scrapping a products')
 }
 module.exports = products;

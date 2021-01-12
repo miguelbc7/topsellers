@@ -10,6 +10,9 @@ const CategorySchema = new Schema({
     url: {
         type: String,
         required: 'Url es requerida'
+    },
+    date: {
+        type: Date
     }
 });
 

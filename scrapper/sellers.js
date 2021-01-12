@@ -3,7 +3,7 @@ const scrapeIt = require("scrape-it")
 const Seller = require("../models/Seller");
 const sellers = async () => {
     const PAGES = 10
-    console.log('Se inicio el scraping')
+    console.log('Se inicio el scraping a sellers')
     for(let a = 0; a < PAGES; a++){
         let page = `&page=${a+1}`
         const BASE_URL = 'https://www.sellerratings.com'
