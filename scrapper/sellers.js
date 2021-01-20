@@ -113,7 +113,7 @@ const sellers = async () => {
                     let data = {
                         name:item.name,
                         url:BASE_AMAZON_URL + ID_URL.url.split('=')[1],
-                        ranking:item.ranking[1],
+                        ranking:item.ranking[1].split(',').join(''),
                         id:ID_URL.url.split('=')[1],
                         summary:summary
                     }

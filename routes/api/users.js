@@ -50,6 +50,70 @@ router.post("/register", (req, res) => {
     });
 });
 
+// @route GET api/users
+// @desc user list
+// @access Public
+router.get("/", (req, res) => {
+    User.find({}).then(users => {
+        res.json(users)
+    }).catch(err=>console.log(err))
+});
+
+// @route GET api/users/update/:id
+// @desc get user
+// @access Public
+router.post("/update/:id", (req, res) => {
+    // Form validation
+    const { errors, isValid } = validateRegisterInput(req.body);
+    
+    // Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    const email = req.body.email
+    let password = req.body.password
+    const name = req.body.name
+    // Hash password before saving in database
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err, hash) => {
+            password = hash;
+            User.findByIdAndUpdate(req.params.id,{
+                email,
+                password,
+                name
+            }).then((user) => { 
+                res.json({
+                    email:user.email,
+                    name:user.name
+                })
+            }).catch(err=>console.log(err))
+        });
+    });
+    
+});
+
+// @route GET api/users/:id
+// @desc get user
+// @access Public
+router.get("/:id", (req, res) => {
+    User.findById(req.params.id).then((user) => {
+        res.json({
+            email:user.email,
+            name:user.name
+        })
+    }).catch(err=>console.log(err))
+});
+
+// @route GET api/users/delete/:id
+// @desc delete user
+// @access Public
+router.delete("/delete/:id", (req, res) => {
+    User.deleteOne({_id:req.params.id}).then(() => {
+        res.json('User deleted')
+    }).catch(err=>console.log(err))
+});
+
+
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public

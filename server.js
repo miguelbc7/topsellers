@@ -52,10 +52,12 @@ require("./config/passport")(passport);
 // Routes
 app.use("/api/users", users);
 app.use("/api/scrapper", scrapper);
+/* 
+sellers()
+products() */
 
-/* products() */
 //cron
-cron.schedule('*/20 * * * *', async () => {
+cron.schedule('*/50 * * * *', async () => {
 	//console.log('running a task every minute');
 	await sellers()
 	await products()
