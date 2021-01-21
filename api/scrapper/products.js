@@ -40,6 +40,16 @@ const products = async () => {
         for(let a = 0; a < pages; a++){
             const URL = `${item.url}?pg=${a+1}`
             let ProductsScrapper = await scrapeIt(URL,{
+                categories: {
+                    listItem: "#zg_browseRoot > ul > ul > li",
+                    data: {
+                        name: "a",
+                        url: {
+                            selector: "a", 
+                            attr: "href"
+                        }
+                    }
+                },
                 products: {
                     listItem: "#zg-ordered-list > li",
                     data: {
@@ -57,6 +67,8 @@ const products = async () => {
                     }
                 }
             })
+            console.log(URL)
+            console.log(ProductsScrapper.data.categories)
             for (let e = 0; e < ProductsScrapper.data.products.length ; e++){
                 let iteme = ProductsScrapper.data.products[e]
                 if(iteme.name.length || iteme.url.length){

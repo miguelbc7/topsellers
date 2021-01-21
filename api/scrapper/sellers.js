@@ -2,7 +2,7 @@ const scrapeIt = require("scrape-it")
 // Load Seller model
 const Seller = require("../models/Seller");
 const sellers = async () => {
-    const PAGES = 10
+    const PAGES = 25
     console.log('Se inicio el scraping a sellers')
     for(let a = 0; a < PAGES; a++){
         let page = `&page=${a+1}`
@@ -30,6 +30,7 @@ const sellers = async () => {
         for(let i = 0; i < SellersScrapper.data.sellers.length; i++){
             let item = SellersScrapper.data.sellers[i]
             console.log('vuelta: ',i+1)
+            console.log('url: '+ BASE_URL + item.url)
             if(item.name.length > 0){
                 const URL_P = BASE_URL + item.url
                 let IdScrapper = await scrapeIt(URL_P, {
@@ -45,7 +46,7 @@ const sellers = async () => {
                 });
                 let ID_URL = IdScrapper.data.content.find(item => item.url.length > 1)
                 if(ID_URL){
-    
+                    console.log('encontro el id',BASE_AMAZON_URL + ID_URL.url.split('=')[1])
                     let AmazonScrapper = await scrapeIt(BASE_AMAZON_URL + ID_URL.url.split('=')[1], {
                         th : {
                             listItem:'#feedback-summary-table > tr > th'

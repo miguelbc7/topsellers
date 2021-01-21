@@ -10,8 +10,8 @@ import Layout from '@/pages/layout.vue';
 
 Vue.use(Router);
 
-export default new Router({
-	routes: [
+const router = new Router({
+    routes: [
         { 
             path: '/', 
             name: 'login',
@@ -19,33 +19,37 @@ export default new Router({
         },
         {
             path: '/home',
-            name: 'home',
             component: Layout,
             children:[
                 { 
-                    path: '/home/products', 
-                    name: 'products',
-                    component: Products 
+                    path: '', 
+                    name: 'sellers',
+                    component: Sellers,
+                    meta: { Auth: true } 
                 },
                 { 
-                    path: '/', 
-                    name: 'sellers',
-                    component: Sellers 
+                    path: '/home/products', 
+                    name: 'products',
+                    component: Products,
+                    meta: { Auth: true } 
                 },
                 { 
                     path: '/home/user/register', 
                     name: 'user-register',
-                    component: UserRegister 
+                    component: UserRegister,
+                    meta: { Auth: true } 
                 },
                 { 
                     path: '/home/user/edit/:id', 
                     name: 'user-edit',
-                    component: UserRegister 
+                    component: UserRegister,
+                    meta: { Auth: true } 
                 },
                 { 
                     path: '/home/users', 
                     name: 'users',
-                    component: UserList 
+                    component: UserList,
+                    meta: { Auth: true } 
                 }
             ]
         }
@@ -55,3 +59,17 @@ export default new Router({
     linkActiveClass: "active",
     mode: "history"
 });
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token')
+    if (to.meta.Auth && !token) {
+        next({ path: '/' });
+    } 
+    else {
+        if(to.name === "login" && token){
+            next({ path: '/home' });
+        }
+        next();
+    }
+});
+
+export default router

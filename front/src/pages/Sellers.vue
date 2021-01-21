@@ -4,7 +4,7 @@
     <div class="text-center p-4">
       <h4>Top Rated Sellers  <b-icon icon="question-circle-fill"></b-icon></h4>
       <b-card class="text-center">
-        <b-navbar-nav class="ml-auto float-right">
+        <!-- <b-navbar-nav class="ml-auto float-right">
             <b-nav-form>
               <b-input-group size="sm" class="mb-2">
               <b-input-group-prepend is-text>
@@ -12,9 +12,9 @@
               </b-input-group-prepend>
                 <b-form-input type="search" placeholder="Search" size="lg" rigth></b-form-input>
               </b-input-group>
-              <!--<b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>-->
+              <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
             </b-nav-form>
-        </b-navbar-nav>
+        </b-navbar-nav> -->
         <b-table :items="items" :fields="fields" responsive>
           <template #thead-top>
             <b-tr>
@@ -69,6 +69,14 @@
             -
           </template>
         </b-table>
+        <div class="float-right">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="my-table"
+          ></b-pagination>
+        </div>
       </b-card>
     </div>
   </div>
@@ -79,6 +87,9 @@ export default {
   name: 'Navbar',
   data() {
       return {
+        rows:0,
+        currentPage:1,
+        perPage:100,
         // Note 'isActive' is left out and will not appear in the rendered table
         fields: [
           {
@@ -170,14 +181,27 @@ export default {
         items: []
       }
     },
+    watch:{
+      currentPage(){
+        console.log('pagina cambió:', this.currentPage)
+        this.getSellers()
+      }
+    },
+    methods:{
+      getSellers() {
+        axios.get('scrapper/sellers?page='+this.currentPage)
+        .then(res=>{
+          this.items = res.data.docs
+          this.rows = res.data.totalDocs
+          this.perPage = res.data.limit
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+      }
+    },
     created() {
-      axios.get('scrapper/sellers')
-      .then(res=>{
-        this.items = res.data
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+      this.getSellers()
     }
 }
 </script>

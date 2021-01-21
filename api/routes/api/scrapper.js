@@ -11,7 +11,8 @@ const Product = require("../../models/Product");
 // @desc Scrapping for web 
 // @access Public
 router.get("/sellers", async (req, res) => {
-    let sellers = await Seller.find({}).exec()
+    let page = req.query.page
+    let sellers = await Seller.paginate({},{limit:10,page:page})
     return res.json(sellers);
 });
 
