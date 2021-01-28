@@ -54,15 +54,14 @@ app.use("/api/users", users);
 app.use("/api/scrapper", scrapper);
 
 const task = async()=>{
-	await sellers()
+	/* await sellers() */
 	products()
 }
-task()
+/* task() */
 //cron
 cron.schedule('*/50 * * * *', async () => {
-	//console.log('running a task every minute');
-	await sellers()
-	await products()
+	/* await sellers()
+	await products() */
 });
 
 

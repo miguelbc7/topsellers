@@ -12,7 +12,7 @@ const Product = require("../../models/Product");
 // @access Public
 router.get("/sellers", async (req, res) => {
     let page = req.query.page
-    let sellers = await Seller.paginate({},{limit:10,page:page})
+    let sellers = await Seller.paginate({},{limit:25,page:page})
     return res.json(sellers);
 });
 
